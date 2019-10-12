@@ -65,9 +65,9 @@ def sorted_insert(arr, val):
 def median(arr):
     is_odd = len(arr) % 2 != 0
     if is_odd:
-        return arr[len(arr) / 2]
+        return arr[len(arr) // 2]
     else:
-        half_length = len(arr) / 2 - 1
+        half_length = len(arr) // 2 - 1
         return (arr[half_length] + arr[half_length + 1]) / 2.0
 
 
