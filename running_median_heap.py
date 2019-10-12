@@ -1,13 +1,14 @@
-#!/usr/bin/env python3
-'''
+#!/usr/bin/env python
+"""
 Solution to the "Find the Running Median" problem from hackerrank
 https://www.hackerrank.com/challenges/find-the-running-median/problem
 
 By Pedro F Linhares, October 12th, 2019.
-'''
+"""
 
 import random
 import time
+
 import numpy as np
 
 
@@ -95,7 +96,7 @@ class MinMaxHeap:
 
 def median(min_heap, max_heap):
     if len(min_heap) == len(max_heap):
-        return (min_heap.peek() + max_heap.peek()) / 2
+        return (min_heap.peek() + max_heap.peek()) / 2.0
     elif len(min_heap) > len(max_heap):
         return min_heap.peek()
     else:
@@ -126,17 +127,17 @@ def runningMedian(input_arr):
     return output
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     random.seed(time.time())
     input_val = [random.randint(0, 10 ** 5)
-                 for i in range(10 ** 5)]
+                 for i in range(10 ** 4)]
     output = runningMedian(input_val)
     for i in range(len(output)):
         raw_input = input_val[:(i + 1)]
         np_median = np.median(raw_input)
         if output[i] != np_median:
-            print(
-                f"{i}: Failed expected: {np_median}, but got: {output[i]}")
-            print(f"\tInput was: {raw_input}")
+            print("{}: Failed expected: {:.1f}, but got: {:.1f}".format(
+                i + 1, np_median, output[i]))
+            print("\tInput was: {}".format(raw_input))
         else:
-            print(f"{i}: Succeeded")
+            print("{}: Succeeded".format(i + 1))

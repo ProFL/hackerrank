@@ -1,14 +1,72 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
+import math
 import random
+import time
 
 
 class MinMaxHeap:
+    @staticmethod
+    def get_max_nodes_for_height(height):
+        return 2 ** (height + 1) - 1
+
     def __init__(self, is_max=True):
         self._items = []
         self._is_max = is_max
 
     def __len__(self):
         return len(self._items)
+
+    # FIXME: Not pretty pretting a non-complete tree
+    def __str__(self):
+        output = []
+        output.append("Heap: {}".format(self._items))
+        height = self.get_height()
+        output.append("Height: {}".format(height))
+        max_nodes_for_height = MinMaxHeap.get_max_nodes_for_height(height)
+        # output.append("Max nodes for given height: {}\n".format(
+        #     max_nodes_for_height))
+
+        total_print_count = 1
+        cur_line_count = 2
+        lines = [[self._items[0]]]
+        while total_print_count < len(self._items):
+            to_print = []
+            while len(to_print) < cur_line_count and total_print_count < len(self._items):
+                to_print.append(self._items[total_print_count])
+                total_print_count += 1
+            lines.append(to_print)
+            cur_line_count *= 2
+        # output.append("{}".format(lines))
+        output.append('')
+
+        # + 1 space + 2 brackets
+        base_line_length = max_nodes_for_height * (1 + 2) - 1
+        base_line = ''.join([' ' for i in range(base_line_length)])
+        for i in range(len(lines)):
+            str_to_print = list(base_line)
+
+            # if i == len(lines) - 1:
+            #     elem_spacing = base_line_length / max_nodes_for_height
+            # else:
+            elem_spacing = base_line_length / len(lines[i])
+
+            idx = 0
+            pos = 0
+            while idx < len(lines[i]):
+                str_to_print[pos] = '{'
+                str_to_print[pos + 1] = '}'
+                idx += 1
+                pos += elem_spacing + 1
+
+            last_pos = pos + 1 - elem_spacing
+            post_space_count = len(str_to_print) - last_pos - 1
+            if post_space_count > 0:
+                str_to_print = [' ' for j in range(
+                    post_space_count / 2)] + str_to_print[:-(post_space_count / 2)]
+            joint = "".join(str_to_print)
+            # output.append(i, lines[i], elem_spacing, post_space_count, joint)
+            output.append(joint.format(*lines[i]))
+        return "\n".join(output)
 
     def __heapify_up(self, compare_method):
         idx = len(self._items) - 1
@@ -69,6 +127,9 @@ class MinMaxHeap:
         else:
             self.__heapify_down(lambda a, b: a > b)
 
+    def get_height(self):
+        return int(math.ceil(math.log(len(self._items) + 1, 2) - 1))
+
     def peek(self):
         return self._items[0]
 
@@ -83,47 +144,40 @@ class MinMaxHeap:
         self._heapify_down()
         return head
 
-    def show(self):
-        print(self._items)
-
-        print(self._items[0])
-        total_print_count = 1
-        cur_line_count = 2
-
-        while total_print_count < len(self._items):
-            to_print = []
-            while len(to_print) < cur_line_count and total_print_count < len(self._items):
-                to_print.append(self._items[total_print_count])
-                total_print_count += 1
-            print(' '.join(map(str, to_print)))
-            cur_line_count *= 2
-        print()
-
 
 if __name__ == "__main__":
-    print('MinHeap tests')
-    min_heap = MinMaxHeap()
-    for i in range(7):
-        min_heap.enqueue(random.randint(0, 100))
-    min_heap.show()
-    removed = min_heap.dequeue()
-    print(f"Removed: {removed}, now queue is:")
-    min_heap.show()
-    removed = min_heap.dequeue()
-    print(f"Removed: {removed}, now queue is:")
-    min_heap.show()
+    random.seed(time.time())
+    max_gen_height = 4
 
-    print()
-    print()
+    print("MaxHeap tests")
+    max_heap = MinMaxHeap()
+    for i in range(random.randint(1, 2 * (2 ** max_gen_height) - 1)):
+        max_heap.enqueue(random.randint(0, 100))
+    print(max_heap)
+    print('\n')
+    removed = max_heap.dequeue()
+    print("Removed: {}, now queue is:".format(removed))
+    print(max_heap)
+    print('\n')
+    removed = max_heap.dequeue()
+    print("Removed: {}, now queue is:".format(removed))
+    print(max_heap)
+    print('\n')
 
-    print('MaxHeap tests')
+    print("\n")
+    print("\n")
+
+    print("MinHeap tests")
     min_heap = MinMaxHeap(False)
-    for i in range(7):
+    for i in range(random.randint(1, 2 * (2 ** max_gen_height) - 1)):
         min_heap.enqueue(random.randint(0, 100))
-    min_heap.show()
+    print(min_heap)
+    print('\n')
     removed = min_heap.dequeue()
-    print(f"Removed: {removed}, now queue is:")
-    min_heap.show()
+    print("Removed: {}, now queue is:".format(removed))
+    print(min_heap)
+    print('\n')
     removed = min_heap.dequeue()
-    print(f"Removed: {removed}, now queue is:")
-    min_heap.show()
+    print("Removed: {}, now queue is:".format(removed))
+    print(min_heap)
+    print('\n')

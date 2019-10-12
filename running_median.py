@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-'''
+#!/usr/bin/env python
+"""
 Solution to the "Find the Running Median" problem from hackerrank
 https://www.hackerrank.com/challenges/find-the-running-median/problem
 
@@ -14,24 +14,12 @@ keep the latter.
 For the proper solution, see [running_median_heap.py](./running_median_heap.py)
 
 By Pedro F Linhares, October 11th, 2019.
-'''
+"""
 
 import random
+import time
+
 import numpy as np
-
-
-def _fuzzy_binary_search(arr, val, left, right):
-    search_point = (right + left) // 2
-
-    if left < right:
-        if (arr[search_point] == val):
-            return search_point
-        elif (val > arr[search_point]):
-            return _fuzzy_binary_search(arr, val, search_point + 1, right)
-        else:
-            return _fuzzy_binary_search(arr, val, left, search_point - 1)
-
-    return left
 
 
 def fuzzy_binary_search(arr, val):
@@ -40,7 +28,19 @@ def fuzzy_binary_search(arr, val):
     elif arr[-1] < val:
         return len(arr)
 
-    return _fuzzy_binary_search(arr, val, 0, len(arr) - 1)
+    left = 0
+    right = len(arr) - 1
+    while left < right:
+        search_point = (right + left) // 2
+
+        if (arr[search_point] == val):
+            return search_point
+        elif (val > arr[search_point]):
+            left = search_point + 1
+        else:
+            right = search_point - 1
+
+    return left
 
 
 def sorted_insert(arr, val):
@@ -65,10 +65,10 @@ def sorted_insert(arr, val):
 def median(arr):
     is_odd = len(arr) % 2 != 0
     if is_odd:
-        return arr[len(arr) // 2]
+        return arr[len(arr) / 2]
     else:
-        half_length = len(arr) // 2 - 1
-        return (arr[half_length] + arr[half_length + 1]) / 2
+        half_length = len(arr) / 2 - 1
+        return (arr[half_length] + arr[half_length + 1]) / 2.0
 
 
 def runningMedian(input_arr):
@@ -77,25 +77,24 @@ def runningMedian(input_arr):
 
     for i in range(len(input_arr)):
         arr = sorted_insert(arr, input_arr[i])
-        med = float("{0:.1f}".format(median(arr)))
-        output.append((med, arr))
+        med = float("{:.1f}".format(median(arr)))
+        output.append(med)
 
     return output
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # output = runningMedian([38, 27, 43, 3, 9, 82, 10])
+    random.seed(time.time())
     input_val = [random.randint(0, 10 ** 5)
                  for i in range(10 ** 4)]
     output = runningMedian(input_val)
     for i in range(len(output)):
         raw_input = input_val[:(i + 1)]
-        np_sort = np.sort(raw_input)
-        np_median = np.median(np_sort)
-        if output[i][0] != np_median:
-            print(
-                f"{i}: Failed expected: {np_median}, but got: {output[i][0]}")
-            print(f"\tInput was: {raw_input}")
-            print(f"\tFailed sort was: {output[i][1]}\n")
+        np_median = np.median(raw_input)
+        if output[i] != np_median:
+            print("{}: Failed expected: {:.1f}, but got: {:.1f}".format(
+                i + 1, np_median, output[i]))
+            print("\tInput was: {}".format(raw_input))
         else:
-            print(f"{i}: Succeeded")
+            print("{}: Succeeded".format(i + 1))

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 import os
 import sys
@@ -37,6 +37,6 @@ def sort(arr):
     return merge(left, right)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     print(sort([38, 27, 43, 3, 9, 82, 10]))
     print(sort([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]))
